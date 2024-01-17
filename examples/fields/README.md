@@ -22,6 +22,8 @@ source env/bin/activate
 pip install -r 'examples/fields/requirements.txt'
 ```
 
+> To install current version of `starlette-admin-fields`, run `pip install -e .`.
+
 - Run the application:
 
 ```shell
