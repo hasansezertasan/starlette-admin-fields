@@ -13,8 +13,10 @@ from starlette_admin.helpers import html_params
 class SimpleMDEField(TextAreaField):
     """A field that provides a Markdown editor for long text content using the
     [SimpleMDE](https://simplemde.com/) library.
-    This field can be used as an alternative to the [TextAreaField][starlette_admin.fields.TextAreaField]
-    to provide a more sophisticated editor for user input.
+
+    This field can be used as an alternative to the TextAreaField to provide
+    a more sophisticated editor for user input.
+
     Parameters:
         version: SimpleMDE version
         spell_checker: Enable spell checker
