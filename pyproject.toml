@@ -1,0 +1,84 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "starlette-admin-fields"
+dynamic = ["version"]
+description = 'Extra fields to use with Starlette Admin'
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+# TODO: Update keywords
+keywords = []
+authors = [
+  { name = "hasansezertasan", email = "hasansezertasan@gmail.com" },
+]
+# TODO: Update classifiers
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = []
+
+[project.urls]
+Documentation = "https://github.com/hasansezertasan/starlette-admin-fields#readme"
+Issues = "https://github.com/hasansezertasan/starlette-admin-fields/issues"
+Source = "https://github.com/hasansezertasan/starlette-admin-fields"
+Changelog = "https://hasansezertasan.github.io/starlette-admin-fields/changelog"
+
+[tool.hatch.version]
+path = "src/starlette_admin_fields/__about__.py"
+
+[tool.hatch.envs.default]
+dependencies = [
+  "coverage[toml]>=6.5",
+  "pytest",
+]
+[tool.hatch.envs.default.scripts]
+test = "pytest {args:tests}"
+test-cov = "coverage run -m pytest {args:tests}"
+cov-report = [
+  "- coverage combine",
+  "coverage report",
+]
+cov = [
+  "test-cov",
+  "cov-report",
+]
+
+[[tool.hatch.envs.all.matrix]]
+python = ["3.8", "3.9", "3.10", "3.11", "3.12"]
+
+[tool.hatch.envs.types]
+dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/starlette_admin_fields tests}"
+
+[tool.coverage.run]
+source_pkgs = ["starlette_admin_fields", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/starlette_admin_fields/__about__.py",
+]
+
+[tool.coverage.paths]
+starlette_admin_fields = ["src/starlette_admin_fields", "*/starlette-admin-fields/src/starlette_admin_fields"]
+tests = ["tests", "*/starlette-admin-fields/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
