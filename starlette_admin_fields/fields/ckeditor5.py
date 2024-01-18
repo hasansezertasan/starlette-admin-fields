@@ -9,10 +9,10 @@ from starlette_admin.fields import TextAreaField
 @dataclass
 class CKEditor5Field(TextAreaField):
     """A field that provides a WYSIWYG editor for long text content using the
-     [CKEditor5](https://ckeditor.com/) library.
+    [CKEditor5](https://ckeditor.com/) library.
 
-    This field can be used as an alternative to the [TextAreaField][starlette_admin.fields.TextAreaField]
-    to provide a more sophisticated editor for user input.
+    This field can be used as an alternative to the TextAreaField to provide
+    a more sophisticated editor for user input.
     """
 
     class_: str = "field-ckeditor5 form-control"

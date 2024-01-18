@@ -12,9 +12,11 @@ from starlette_admin.helpers import html_params
 @dataclass
 class CKEditor4Field(TextAreaField):
     """A field that provides a WYSIWYG editor for long text content using the
-     [CKEditor4](https://ckeditor.com/) library.
-    This field can be used as an alternative to the [TextAreaField][starlette_admin.fields.TextAreaField]
-    to provide a more sophisticated editor for user input.
+    [CKEditor4](https://ckeditor.com/) library.
+
+    This field can be used as an alternative to the TextAreaField to provide
+    a more sophisticated editor for user input.
+
     Parameters:
         version: CKEditor4 version
         distribution: CKEditor4 distribution
