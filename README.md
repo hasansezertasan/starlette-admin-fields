@@ -15,8 +15,16 @@ Extra fields to use with Starlette Admin
 
 ## Installation
 
+> Latest Release
+
 ```console
 pip install starlette-admin-fields
+```
+
+> Development Version
+
+```console
+pip install git+https://github.com/hasansezertasan/starlette-admin-fields.git
 ```
 
 ## License
