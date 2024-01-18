@@ -9,11 +9,24 @@ git clone https://github.com/hasansezertasan/starlette-admin-fields.git
 cd starlette-admin-fields
 ```
 
-- Create and activate a virtual environment:
+- Create a virtual environment:
 
 ```shell
-python3 -m venv env
-source env/bin/activate
+python3 -m venv venv
+```
+
+- Activate the virtual environment:
+
+> On Windows:
+
+```shell
+venv/Scripts/activate.bat
+```
+
+> On Unix or MacOS:
+
+```shell
+source venv/bin/activate
 ```
 
 - Install requirements:
