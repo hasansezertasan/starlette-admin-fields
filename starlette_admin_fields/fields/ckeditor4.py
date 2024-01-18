@@ -8,6 +8,7 @@ from starlette_admin._types import RequestAction
 from starlette_admin.fields import TextAreaField
 from starlette_admin.helpers import html_params
 
+
 @dataclass
 class CKEditor4Field(TextAreaField):
     """A field that provides a WYSIWYG editor for long text content using the
@@ -34,7 +35,12 @@ class CKEditor4Field(TextAreaField):
         if action.is_form():
             return [
                 f"https://cdn.ckeditor.com/{self.version}/{self.distribution}/ckeditor.js",
-                str(request.url_for(f"{request.app.state.ROUTE_NAME}:statics", path="js/form-extra.js")),
+                str(
+                    request.url_for(
+                        f"{request.app.state.ROUTE_NAME}:statics",
+                        path="js/form-extra.js",
+                    )
+                ),
             ]
         return []
 
@@ -43,4 +49,8 @@ class CKEditor4Field(TextAreaField):
             "height": self.height,
             **self.extra_options,
         }
-        return super().input_params() + " " + html_params({"data-options": json.dumps(_options)})
+        return (
+            super().input_params()
+            + " "
+            + html_params({"data-options": json.dumps(_options)})
+        )

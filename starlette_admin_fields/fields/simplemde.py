@@ -8,6 +8,7 @@ from starlette_admin._types import RequestAction
 from starlette_admin.fields import TextAreaField
 from starlette_admin.helpers import html_params
 
+
 @dataclass
 class SimpleMDEField(TextAreaField):
     """A field that provides a Markdown editor for long text content using the
@@ -38,11 +39,18 @@ class SimpleMDEField(TextAreaField):
         if action.is_form():
             return [
                 f"https://cdn.jsdelivr.net/npm/simplemde@{self.version}/dist/simplemde.min.js",
-                str(request.url_for(f"{request.app.state.ROUTE_NAME}:statics", path="js/form-extra.js")),
+                str(
+                    request.url_for(
+                        f"{request.app.state.ROUTE_NAME}:statics",
+                        path="js/form-extra.js",
+                    )
+                ),
             ]
         return []
 
-    def additional_css_links(self, request: Request, action: RequestAction) -> List[str]:
+    def additional_css_links(
+        self, request: Request, action: RequestAction
+    ) -> List[str]:
         if action.is_form():
             return [
                 f"https://cdn.jsdelivr.net/npm/simplemde@{self.version}/dist/simplemde.min.css",
@@ -59,4 +67,8 @@ class SimpleMDEField(TextAreaField):
             **self.extra_options,
         }
 
-        return super().input_params() + " " + html_params({"data-options": json.dumps(_options)})
+        return (
+            super().input_params()
+            + " "
+            + html_params({"data-options": json.dumps(_options)})
+        )
