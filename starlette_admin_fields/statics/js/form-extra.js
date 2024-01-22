@@ -18,7 +18,7 @@
                 });
         });
         // end CKEditor5Field integration
-    
+
         // SimpleMDEField integration
         $(".field-simplemde", element).each(function () {
             let options = $(this).data("options");
