@@ -4,7 +4,7 @@ from starlette.staticfiles import StaticFiles
 from starlette_admin import BaseAdmin
 
 
-def extend_admin(admin: BaseAdmin):
+def extend_admin(admin: BaseAdmin) -> None:
     """
     Extend admin with extra templates and statics.
 
