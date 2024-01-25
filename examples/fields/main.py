@@ -1,7 +1,7 @@
 from starlette.applications import Starlette
 from starlette_admin.contrib.sqla import Admin, ModelView
 from starlette_admin.fields import IntegerField
-from starlette_admin_fields.fields import (
+from starlette_admin_fields import (
     BootstrapShowPasswordField,
     CKEditor4Field,
     CKEditor5Field,
