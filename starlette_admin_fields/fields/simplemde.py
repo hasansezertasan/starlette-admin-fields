@@ -27,7 +27,8 @@ class SimpleMDEField(TextAreaField):
     """
 
     class_: str = "field-simplemde form-control"
-    display_template: str = "displays/tinymce.html"
+    form_template: str = "forms/simplemde.html"
+    display_template: str = "displays/simplemde.html"
     version: str = "1.11.2"
     placeholder: str = ""
     spell_checker: bool = False
@@ -43,7 +44,7 @@ class SimpleMDEField(TextAreaField):
                 f"https://cdn.jsdelivr.net/npm/simplemde@{self.version}/dist/simplemde.min.js",
                 str(
                     request.url_for(
-                        f"{request.app.state.ROUTE_NAME}:statics",
+                        f"{request.app.state.ROUTE_NAME}:statics-saf",
                         path="js/form-extra.js",
                     )
                 ),

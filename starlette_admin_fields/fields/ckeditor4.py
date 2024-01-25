@@ -39,7 +39,7 @@ class CKEditor4Field(TextAreaField):
                 f"https://cdn.ckeditor.com/{self.version}/{self.distribution}/ckeditor.js",
                 str(
                     request.url_for(
-                        f"{request.app.state.ROUTE_NAME}:statics",
+                        f"{request.app.state.ROUTE_NAME}:statics-saf",
                         path="js/form-extra.js",
                     )
                 ),

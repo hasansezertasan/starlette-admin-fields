@@ -26,7 +26,7 @@ class CKEditor5Field(TextAreaField):
                 f"https://cdn.ckeditor.com/ckeditor5/{self.version}/{self.distribution}/ckeditor.js",
                 str(
                     request.url_for(
-                        f"{request.app.state.ROUTE_NAME}:statics",
+                        f"{request.app.state.ROUTE_NAME}:statics-saf",
                         path="js/form-extra.js",
                     )
                 ),
@@ -40,7 +40,7 @@ class CKEditor5Field(TextAreaField):
             return [
                 str(
                     request.url_for(
-                        f"{request.app.state.ROUTE_NAME}:statics",
+                        f"{request.app.state.ROUTE_NAME}:statics-saf",
                         path="css/ckeditor5.css",
                     )
                 )
