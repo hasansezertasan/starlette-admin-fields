@@ -1,13 +1,13 @@
-# Starlette Admin Fields
+# Starlette Admin Fields Example - Kitchensink
 
-To run this example:
-
-- Clone the repository:
+## Clone the repo
 
 ```shell
 git clone https://github.com/hasansezertasan/starlette-admin-fields.git
 cd starlette-admin-fields
 ```
+
+## Install dependencies with virtualenv
 
 - Create a virtual environment:
 
@@ -37,7 +37,7 @@ pip install -r 'examples/fields/requirements.txt'
 
 > To install current version of `starlette-admin-fields`, run `pip install -e .`.
 
-- Run the application:
+## Run the application
 
 ```shell
 uvicorn examples.fields.main:app
