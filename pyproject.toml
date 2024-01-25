@@ -63,7 +63,7 @@ test = [
   "black ==23.12.1",
   "httpx >=0.23.3, <0.27.0",
 ]
-cov = ["coverage[toml] >=7.0.0, <7.4.0"]
+cov = ["coverage[toml] >=7.0.0, <7.5.0"]
 doc = [
   "mkdocs >=1.4.2, <2.0.0",
   "mkdocs-material >=9.0.0, <10.0.0",
