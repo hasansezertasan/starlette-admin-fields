@@ -6,6 +6,7 @@ from starlette_admin_fields.fields import (
     CKEditor4Field,
     CKEditor5Field,
     SimpleMDEField,
+    extend_admin,
 )
 
 from .database import Base, KitchenSink, engine
@@ -46,6 +47,9 @@ app = Starlette(on_startup=[init_database])
 
 # Create admin
 admin = Admin(engine, title="Example: Fields", base_url="/")
+
+# Extend Admin
+extend_admin(admin)
 
 # Add views
 admin.add_view(KitchenSinkView(model=KitchenSink))
