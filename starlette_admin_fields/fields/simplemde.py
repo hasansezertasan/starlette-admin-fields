@@ -27,8 +27,7 @@ class SimpleMDEField(TextAreaField):
     """
 
     class_: str = "field-simplemde form-control"
-    form_template: str = "forms/simplemde.html"
-    display_template: str = "displays/simplemde.html"
+    display_template: str = "displays/tinymce.html"
     version: str = "1.11.2"
     placeholder: str = ""
     spell_checker: bool = False
