@@ -19,7 +19,7 @@ def extend_admin(admin: BaseAdmin) -> None:
         ```
     """
     # Validate templates
-    admin.templates.env.loader.loaders.append(
+    admin.templates.env.loader.loaders.append(  # type: ignore
         PackageLoader("starlette_admin_fields", "templates")
     )
     # Validate statics by navigating to /admin/statics-saf/js/form-extra.js
