@@ -11,18 +11,16 @@ def extend_admin(admin: BaseAdmin) -> None:
     Parameters:
         admin: The admin instance.
 
-    Usage:
+    !!! usage
         ```python
         from starlette_admin_fields import extend_admin
 
         extend_admin(admin)
         ```
     """
-    # Validate templates
     admin.templates.env.loader.loaders.append(  # type: ignore
         PackageLoader("starlette_admin_fields", "templates")
     )
-    # Validate statics by navigating to /admin/statics-saf/js/form-extra.js
     admin.routes.append(
         Mount(
             "/statics-saf",
