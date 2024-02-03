@@ -1,8 +1,9 @@
+from typing import Optional
+
 from jinja2 import PackageLoader
 from starlette.routing import Mount
 from starlette.staticfiles import StaticFiles
 from starlette_admin import BaseAdmin
-from typing_extensions import Optional
 
 
 class StarletteAdminFields:
@@ -59,4 +60,3 @@ class StarletteAdminFields:
                 name="statics-saf",
             )
         )
-
