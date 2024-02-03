@@ -14,9 +14,14 @@ keywords = [
   "jinja2",
   "template",
   "starlette",
+  "fastapi",
   "admin",
+  "dashboard",
   "starlette-admin",
   "fields",
+  "ckeditor4",
+  "ckeditor5",
+  "simplemde",
 ]
 authors = [{ name = "Hasan Sezer Taşan", email = "hasansezertasan@gmail.com" }]
 maintainers = [
@@ -57,20 +62,19 @@ Issues = "https://github.com/hasansezertasan/starlette-admin-fields/issues"
 [project.optional-dependencies]
 test = [
   "pytest >=7.2.0, <7.5.0",
-  "pytest-asyncio >=0.20.2, <0.24.0",
   "mypy ==1.8.0",
-  "ruff ==0.1.9",
-  "black ==23.12.1",
+  "ruff ==0.1.15",
+  "black ==24.1.1",
   "httpx >=0.23.3, <0.27.0",
 ]
-cov = ["coverage[toml] >=7.0.0, <7.5.0"]
+cov = ["coverage[toml] >=7.0.0, <7.4.0"]
 doc = [
   "mkdocs >=1.4.2, <2.0.0",
   "mkdocs-material >=9.0.0, <10.0.0",
   "mkdocstrings[python] >=0.19.0, <0.25.0",
   "mkdocs-static-i18n >=0.53.0, <0.57.0",
 ]
-dev = ["pre-commit >=2.20.0, <4.0.0", "uvicorn >=0.20.0, <0.27.0"]
+dev = ["pre-commit >=2.20.0, <4.0.0", "uvicorn >=0.20.0, <0.26.0"]
 
 [tool.hatch.envs.default]
 features = ["test", "cov", "doc", "dev"]
@@ -80,7 +84,11 @@ format = ["ruff starlette_admin_fields tests --fix", "black ."]
 [tool.hatch.envs.test]
 features = ["test", "cov"]
 [tool.hatch.envs.test.scripts]
-lint = ["mypy starlette_admin_fields", "ruff starlette_admin_fields tests", "black . --check"]
+lint = [
+  "mypy starlette_admin_fields",
+  "ruff starlette_admin_fields tests",
+  "black . --check",
+]
 all = "coverage run -m pytest tests"
 
 
@@ -116,6 +124,7 @@ parallel = true
 source = ["starlette_admin_fields", "tests"]
 
 [tool.ruff]
+target-version = "py38"
 select = [
   "B",   # flake8-bugbear
   "C4",  # flake8-comprehensions
@@ -144,7 +153,6 @@ ignore = [
   "E501", # line too long, handled by black
   "N818", # Exception {name} should be named with an Error suffix
 ]
-target-version = "py38"
 
 [tool.ruff.isort]
 known-third-party = ["starlette_admin_fields"]
