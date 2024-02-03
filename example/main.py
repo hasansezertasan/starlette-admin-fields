@@ -6,7 +6,7 @@ from starlette_admin_fields import (
     CKEditor4Field,
     CKEditor5Field,
     SimpleMDEField,
-    extend_admin,
+    StarletteAdminFields,
 )
 
 from .database import Base, KitchenSink, engine
@@ -22,7 +22,7 @@ class KitchenSinkView(ModelView):
         BootstrapShowPasswordField(
             name="bootstra_show_password",
             label="BootstrapShowPasswordField",
-            size="lg",
+            size="md",
         ),
         CKEditor4Field(
             name="ckeditor4",
@@ -49,7 +49,7 @@ app = Starlette(on_startup=[init_database])
 admin = Admin(engine, title="Example: Fields", base_url="/")
 
 # Extend Admin
-extend_admin(admin)
+StarletteAdminFields(admin=admin)
 
 # Add views
 admin.add_view(KitchenSinkView(model=KitchenSink))
