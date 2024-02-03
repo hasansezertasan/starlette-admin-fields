@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2024-present hasansezertasan <hasansezertasan@gmail.com>
 #
 # SPDX-License-Identifier: MIT
-from .base import extend_admin as extend_admin
+from .base import StarletteAdminFields as StarletteAdminFields
 from .fields.bootstrap_show_password import (
     BootstrapShowPasswordField as BootstrapShowPasswordField,
 )
