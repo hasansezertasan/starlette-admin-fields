@@ -1,4 +1,0 @@
-starlette-admin-fields
-starlette-admin
-sqlalchemy
-uvicorn
