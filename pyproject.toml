@@ -111,8 +111,8 @@ exclude_lines = [
 ]
 
 [tool.coverage.run]
+branch = true
 parallel = true
-concurrency = ["thread", "greenlet"]
 source = ["starlette_admin_fields", "tests"]
 
 [tool.ruff]
