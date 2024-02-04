@@ -17,8 +17,28 @@ Extra fields to use with Starlette Admin
 **Table of Contents**
 
 - [starlette-admin-fields](#starlette-admin-fields)
+  - [Features](#features)
+    - [Fields](#fields)
   - [Installation](#installation)
+  - [Usage](#usage)
+  - [Motivation](#motivation)
+  - [Author](#author)
   - [License](#license)
+
+## Features
+
+- Quick integration with Starlette Admin
+- Zero dependencies
+- Fully typed
+
+### Fields
+
+| Field                                                                        | Name                         |
+| ---------------------------------------------------------------------------- | ---------------------------- |
+| [Bootstrap Show Password](https://bootstrap-show-password.wenzhixin.net.cn/) | `BootstrapShowPasswordField` |
+| [CKEditor4](https://ckeditor.com/)                                           | `CKEditor4Field`             |
+| [CKEditor5](https://ckeditor.com/)                                           | `CKEditor5Field`             |
+| [SimpleMDE](https://simplemde.com/)                                          | `SimpleMDEField`             |
 
 ## Installation
 
@@ -33,6 +53,18 @@ pip install starlette-admin-fields
 ```console
 pip install git+https://github.com/hasansezertasan/starlette-admin-fields.git
 ```
+
+## Usage
+
+I didn't write the documentation yet but it's pretty straightforward. You can check the [example](https://github.com/hasansezertasan/starlette-admin-fields/tree/main/example) directory for usage.
+
+## Motivation
+
+I implemented these fields for my own projects and decided to share them.
+
+## Author
+
+- [Hasan Sezer Tasan](https://www.github.com/hasansezertasan), It's me :wave:
 
 ## License
 
