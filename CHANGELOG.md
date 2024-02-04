@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog], and this project adheres to [Semantic
 
 ## [Unreleased]
 
+## [0.1.0] - 2024-02-04
+
 ### Added
 
 * The contents of the PRs opened in the `starlette-admin` repo have been transferred by [@hasansezertasan](https://github.com/hasansezertasan) in [#1](https://github.com/hasansezertasan/starlette-admin-fields/pull/1)
