@@ -9,8 +9,7 @@ from starlette_admin.helpers import html_params
 
 @dataclass
 class BootstrapShowPasswordField(PasswordField):
-    """
-    A PasswordField that provides a show/hide password toggle using the
+    """A PasswordField that provides a show/hide password toggle using the
     [Bootstrap Show Password](https://bootstrap-show-password.wenzhixin.net.cn/) library.
 
     Parameters:
@@ -55,6 +54,6 @@ class BootstrapShowPasswordField(PasswordField):
                     "data-eye-open-class": self.eye_open_class,
                     "data-eye-close-class": self.eye_close_class,
                     "data-eye-class-position-inside": self.eye_class_position_inside,
-                }
+                },
             )
         )

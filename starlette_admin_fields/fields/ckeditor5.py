@@ -28,13 +28,15 @@ class CKEditor5Field(TextAreaField):
                     request.url_for(
                         f"{request.app.state.ROUTE_NAME}:statics-saf",
                         path="js/form-extra.js",
-                    )
+                    ),
                 ),
             ]
         return []
 
     def additional_css_links(
-        self, request: Request, action: RequestAction
+        self,
+        request: Request,
+        action: RequestAction,
     ) -> List[str]:
         if action.is_form():
             return [
@@ -42,7 +44,7 @@ class CKEditor5Field(TextAreaField):
                     request.url_for(
                         f"{request.app.state.ROUTE_NAME}:statics-saf",
                         path="css/ckeditor5.css",
-                    )
-                )
+                    ),
+                ),
             ]
         return []

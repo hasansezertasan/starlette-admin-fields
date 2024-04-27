@@ -7,16 +7,14 @@ from starlette_admin import BaseAdmin
 
 
 class StarletteAdminFields:
-    """
-    Starlette Admin Fields.
+    """Starlette Admin Fields.
 
     !!! note
         This class is just a placeholder for the documentation.
     """
 
     def __init__(self, admin: Optional[BaseAdmin] = None) -> None:
-        """
-        Initialize Starlette Admin Fields.
+        """Initialize Starlette Admin Fields.
 
         Parameters:
             admin: The admin instance.
@@ -34,8 +32,7 @@ class StarletteAdminFields:
             self.init_admin(admin)
 
     def init_admin(self, admin: BaseAdmin) -> None:
-        """
-        Initialize admin with extra templates and statics.
+        """Initialize admin with extra templates and statics.
 
         Parameters:
             admin: The admin instance.
@@ -51,12 +48,12 @@ class StarletteAdminFields:
             ```
         """
         admin.templates.env.loader.loaders.append(  # type: ignore
-            PackageLoader("starlette_admin_fields", "templates")
+            PackageLoader("starlette_admin_fields", "templates"),
         )
         admin.routes.append(
             Mount(
                 "/statics-saf",
                 app=StaticFiles(packages=[("starlette_admin_fields", "statics")]),
                 name="statics-saf",
-            )
+            ),
         )

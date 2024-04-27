@@ -33,12 +33,12 @@ Extra fields to use with Starlette Admin
 
 ### Fields
 
-| Field                                                                        | Name                         |
-| ---------------------------------------------------------------------------- | ---------------------------- |
-| [Bootstrap Show Password](https://bootstrap-show-password.wenzhixin.net.cn/) | `BootstrapShowPasswordField` |
-| [CKEditor4](https://ckeditor.com/)                                           | `CKEditor4Field`             |
-| [CKEditor5](https://ckeditor.com/)                                           | `CKEditor5Field`             |
-| [SimpleMDE](https://simplemde.com/)                                          | `SimpleMDEField`             |
+| Field                                              | Name                         |
+| -------------------------------------------------- | ---------------------------- |
+| [Bootstrap Show Password][bootstrap-show-password] | `BootstrapShowPasswordField` |
+| [CKEditor4][ckeditor]                              | `CKEditor4Field`             |
+| [CKEditor5][ckeditor]                              | `CKEditor5Field`             |
+| [SimpleMDE][simplemde]                             | `SimpleMDEField`             |
 
 ## Installation
 
@@ -69,3 +69,8 @@ I implemented these fields for my own projects and decided to share them.
 ## License
 
 `starlette-admin-fields` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.
+
+<!-- Links -->
+[bootstrap-show-password]: https://bootstrap-show-password.wenzhixin.net.cn/
+[ckeditor]: https://ckeditor.com/
+[simplemde]: https://simplemde.com/

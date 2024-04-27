@@ -73,6 +73,7 @@ dependencies = [
   "pre-commit>=2.20.0, <4.0.0",
   "uvicorn>=0.20.0, <0.28.0",
   "httpx>=0.23.3, <0.27.0",
+  "requests-html>=0.10.0, <0.11.0",
 ]
 [tool.hatch.envs.default.scripts]
 test = "pytest {args:tests}"
