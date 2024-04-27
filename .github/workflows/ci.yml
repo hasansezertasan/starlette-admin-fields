@@ -24,7 +24,7 @@ jobs:
           cache: "pip"
       - name: Install Dependencies
         run: pip install hatch
-      - name: Lint
-        run: hatch run test:lint
+      - name: Type Check, Lint, and Format
+        run: hatch run types:all
       - name: Test
-        run: hatch run test:all
+        run: hatch run test-cov
