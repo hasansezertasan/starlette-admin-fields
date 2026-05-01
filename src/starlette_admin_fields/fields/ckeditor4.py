@@ -1,7 +1,7 @@
 import json
 from dataclasses import dataclass
 from dataclasses import field as dc_field
-from typing import Any, Dict, List, Union
+from typing import Any
 
 from starlette.requests import Request
 from starlette_admin._types import RequestAction
@@ -29,11 +29,11 @@ class CKEditor4Field(TextAreaField):
     version: str = "4.22.1"
     distribution: str = "standard"
 
-    height: Union[int, str] = 300
-    extra_options: Dict[str, Any] = dc_field(default_factory=dict)
+    height: int | str = 300
+    extra_options: dict[str, Any] = dc_field(default_factory=dict)
     """For more options, see the [CKEditor 4 API docs](https://ckeditor.com/docs/ckeditor4/latest/api/CKEDITOR_config.html)"""
 
-    def additional_js_links(self, request: Request, action: RequestAction) -> List[str]:
+    def additional_js_links(self, request: Request, action: RequestAction) -> list[str]:
         if action.is_form():
             return [
                 f"https://cdn.ckeditor.com/{self.version}/{self.distribution}/ckeditor.js",

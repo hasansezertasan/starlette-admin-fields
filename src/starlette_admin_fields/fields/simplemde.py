@@ -1,7 +1,7 @@
 import json
 from dataclasses import dataclass
 from dataclasses import field as dc_field
-from typing import Any, Dict, List
+from typing import Any
 
 from starlette.requests import Request
 from starlette_admin._types import RequestAction
@@ -32,12 +32,12 @@ class SimpleMDEField(TextAreaField):
     placeholder: str = ""
     spell_checker: bool = False
     status: bool = False
-    hide_icons: List[str] = dc_field(default_factory=list)
+    hide_icons: list[str] = dc_field(default_factory=list)
     autofocus: bool = True
-    extra_options: Dict[str, Any] = dc_field(default_factory=dict)
+    extra_options: dict[str, Any] = dc_field(default_factory=dict)
     """For more options, see the [SimpleMDE](https://simplemde.com/)"""
 
-    def additional_js_links(self, request: Request, action: RequestAction) -> List[str]:
+    def additional_js_links(self, request: Request, action: RequestAction) -> list[str]:
         if action.is_form():
             return [
                 f"https://cdn.jsdelivr.net/npm/simplemde@{self.version}/dist/simplemde.min.js",
@@ -51,8 +51,10 @@ class SimpleMDEField(TextAreaField):
         return []
 
     def additional_css_links(
-        self, request: Request, action: RequestAction
-    ) -> List[str]:
+        self,
+        request: Request,  # noqa: ARG002
+        action: RequestAction,
+    ) -> list[str]:
         if action.is_form():
             return [
                 f"https://cdn.jsdelivr.net/npm/simplemde@{self.version}/dist/simplemde.min.css",

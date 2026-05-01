@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import List, Union
 
 from starlette.requests import Request
 from starlette_admin._types import RequestAction
@@ -27,14 +26,14 @@ class BootstrapShowPasswordField(PasswordField):
     class_: str = "field-bootstrap-show-password form-control"
     version: str = "1.2.1"
     placement: str = "after"
-    message: Union[str, bool] = "Click here to show/hide password"
+    message: str | bool = "Click here to show/hide password"
     size: str = "md"
     eye_class: str = "fa"
     eye_open_class: str = "fa-eye"
     eye_close_class: str = "fa-eye-slash"
     eye_class_position_inside: bool = False
 
-    def additional_js_links(self, request: Request, action: RequestAction) -> List[str]:
+    def additional_js_links(self, request: Request, action: RequestAction) -> list[str]:  # noqa: ARG002
         if action.is_form():
             return [
                 f"https://unpkg.com/bootstrap-show-password@{self.version}/dist/bootstrap-show-password.min.js",
