@@ -1,6 +1,7 @@
 from jinja2 import PackageLoader
 from starlette_admin import BaseAdmin
 from starlette_admin_fields import StarletteAdminFields
+from starlette_admin_fields.base import PACKAGE_NAME, STATICS_ROUTE_NAME
 
 
 def _package_loaders(admin: BaseAdmin) -> list[PackageLoader]:
@@ -9,25 +10,24 @@ def _package_loaders(admin: BaseAdmin) -> list[PackageLoader]:
     return [item for item in inner if isinstance(item, PackageLoader)]
 
 
+def _saf_loaders(admin: BaseAdmin) -> list[PackageLoader]:
+    return [ldr for ldr in _package_loaders(admin) if ldr.package_name == PACKAGE_NAME]
+
+
+def _saf_static_routes(admin: BaseAdmin) -> list:
+    return [r for r in admin.routes if getattr(r, "name", "") == STATICS_ROUTE_NAME]
+
+
 def test_package_loader_registered() -> None:
     admin = BaseAdmin()
     StarletteAdminFields(admin)
-    matching = [
-        ldr
-        for ldr in _package_loaders(admin)
-        if ldr.package_name == "starlette_admin_fields"
-    ]
-    assert len(matching) == 1
+    assert len(_saf_loaders(admin)) == 1
 
 
 def test_package_loader_resolves_templates_directory() -> None:
     admin = BaseAdmin()
     StarletteAdminFields(admin)
-    [ldr] = [
-        ldr
-        for ldr in _package_loaders(admin)
-        if ldr.package_name == "starlette_admin_fields"
-    ]
+    [ldr] = _saf_loaders(admin)
     assert ldr.package_path == "templates"
 
 
@@ -38,8 +38,7 @@ def test_init_admin_is_idempotent_on_routes() -> None:
     saf.init_admin(admin)
     saf.init_admin(admin)
     saf.init_admin(admin)
-    statics = [r for r in admin.routes if getattr(r, "name", "") == "statics-saf"]
-    assert len(statics) == 1
+    assert len(_saf_static_routes(admin)) == 1
 
 
 def test_init_admin_is_idempotent_on_template_loader() -> None:
@@ -48,12 +47,7 @@ def test_init_admin_is_idempotent_on_template_loader() -> None:
     saf = StarletteAdminFields()
     saf.init_admin(admin)
     saf.init_admin(admin)
-    matching = [
-        ldr
-        for ldr in _package_loaders(admin)
-        if ldr.package_name == "starlette_admin_fields"
-    ]
-    assert len(matching) == 1
+    assert len(_saf_loaders(admin)) == 1
 
 
 def test_two_instances_share_single_registration() -> None:
@@ -61,5 +55,14 @@ def test_two_instances_share_single_registration() -> None:
     admin = BaseAdmin()
     StarletteAdminFields(admin)
     StarletteAdminFields(admin)
-    statics = [r for r in admin.routes if getattr(r, "name", "") == "statics-saf"]
-    assert len(statics) == 1
+    assert len(_saf_static_routes(admin)) == 1
+
+
+def test_init_admin_idempotent_across_constructor_and_method() -> None:
+    """Constructor-init then explicit init_admin call must not duplicate either side."""
+    admin = BaseAdmin()
+    StarletteAdminFields(admin)
+    deferred = StarletteAdminFields()
+    deferred.init_admin(admin)
+    assert len(_saf_static_routes(admin)) == 1
+    assert len(_saf_loaders(admin)) == 1

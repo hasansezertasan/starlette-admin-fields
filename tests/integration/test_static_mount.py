@@ -3,18 +3,22 @@ from starlette.testclient import TestClient
 
 
 @pytest.mark.parametrize(
-    ("path", "content_marker"),
+    ("path", "content_type_fragment", "body_marker"),
     [
-        ("/admin/statics-saf/js/form-extra.js", b""),
-        ("/admin/statics-saf/css/ckeditor5.css", b""),
+        ("/admin/statics-saf/js/form-extra.js", "javascript", b"function"),
+        ("/admin/statics-saf/css/ckeditor5.css", "text/css", b"{"),
     ],
 )
 def test_static_assets_served(
-    client: TestClient, path: str, content_marker: bytes
+    client: TestClient,
+    path: str,
+    content_type_fragment: str,
+    body_marker: bytes,
 ) -> None:
     response = client.get(path)
     assert response.status_code == 200
-    assert content_marker in response.content
+    assert content_type_fragment in response.headers["content-type"].lower()
+    assert body_marker in response.content
 
 
 def test_unknown_static_asset_returns_404(client: TestClient) -> None:

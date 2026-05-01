@@ -36,7 +36,8 @@ def test_additional_css_links_form_action() -> None:
     request.app.state.ROUTE_NAME = "admin"
 
     css_links = f.additional_css_links(request, RequestAction.EDIT)
-    assert len(css_links) == 1
+    assert css_links == [str(request.url_for.return_value)]
+    request.url_for.assert_called_with("admin:statics-saf", path="css/ckeditor5.css")
 
 
 def test_additional_css_links_skip_non_form() -> None:

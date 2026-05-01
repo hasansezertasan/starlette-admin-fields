@@ -29,11 +29,10 @@ engine = create_engine(
 class KitchenSink(Base):
     __tablename__ = "kitchen_sink"
     id = Column(Integer, primary_key=True)
-    bootstra_show_password = Column(String, nullable=False)
+    bootstrap_show_password = Column(String, nullable=False)
     ckeditor4 = Column(Text, nullable=False)
     ckeditor5 = Column(Text, nullable=False)
     simplemde = Column(Text, nullable=False)
-
 
 
 class KitchenSinkView(ModelView):
@@ -44,7 +43,7 @@ class KitchenSinkView(ModelView):
             read_only=True,
         ),
         BootstrapShowPasswordField(
-            name="bootstra_show_password",
+            name="bootstrap_show_password",
             label="BootstrapShowPasswordField",
             size="md",
         ),
