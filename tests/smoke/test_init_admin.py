@@ -8,3 +8,11 @@ def test_init_admin() -> None:
     admin = BaseAdmin()
     StarletteAdminFields(admin)
     admin.mount_to(app)
+
+
+def test_init_admin_deferred() -> None:
+    app = Starlette()
+    admin = BaseAdmin()
+    saf = StarletteAdminFields()
+    saf.init_admin(admin)
+    admin.mount_to(app)

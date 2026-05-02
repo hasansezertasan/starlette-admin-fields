@@ -1,10 +1,9 @@
 ---
 name: Field Proposal
 about: Suggest a new field for this project
-title: 'Proposal: '
-labels: 'field-proposal'
-assignees: ''
-
+title: "Proposal: "
+labels: "field-proposal"
+assignees: ""
 ---
 
 **Why do you need this field? What does it solve? Please describe.**
