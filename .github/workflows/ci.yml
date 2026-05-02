@@ -28,3 +28,12 @@ jobs:
         run: uv run --python ${{ matrix.python-version }} mypy src/starlette_admin_fields
       - name: Test
         run: uv run --python ${{ matrix.python-version }} coverage run -m pytest tests
+      - name: Coverage XML
+        run: uv run --python ${{ matrix.python-version }} coverage xml
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./coverage.xml
+          flags: py${{ matrix.python-version }}
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
