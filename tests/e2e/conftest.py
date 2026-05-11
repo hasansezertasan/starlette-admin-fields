@@ -95,7 +95,7 @@ def uvicorn_server(free_port: int) -> Iterator[str]:
             proc.wait()
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def base_url(uvicorn_server: str) -> str:
     """Alias used by pytest-playwright's ``page.goto`` callers."""
     return uvicorn_server

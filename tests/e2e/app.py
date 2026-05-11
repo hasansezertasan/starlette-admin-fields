@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING
 
 from sqlalchemy import Column, Integer, String, Text, create_engine
 from sqlalchemy.orm import declarative_base
+from sqlalchemy.pool import StaticPool
 from starlette.applications import Starlette
 from starlette_admin.contrib.sqla import Admin, ModelView
 from starlette_admin.fields import IntegerField
@@ -62,6 +63,7 @@ def make_app() -> tuple[Starlette, Engine]:
     engine = create_engine(
         "sqlite://",
         connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
     )
     Base.metadata.create_all(engine)
 
