@@ -32,7 +32,7 @@ tests/
     test_browser_submit.py
 ```
 
-`tests/e2e/app.py` — dedicated kitchensink-mirror Starlette app. Reads `DB_PATH` env var; defaults to in-memory SQLite when unset (TestClient path). Mounts `StarletteAdminFields(admin)` and one `KitchenSinkView` with all four fields plus an `IntegerField` for `id`.
+`tests/e2e/app.py` — dedicated kitchensink-mirror Starlette app. Always uses in-memory SQLite. Mounts `StarletteAdminFields(admin)` and one `KitchenSinkView` with all four fields plus an `IntegerField` for `id`. Exposes module-level `app` for uvicorn import and a factory `make_app()` for the TestClient fixture (fresh engine per call).
 
 ## Backend HTTP round-trip — `test_http_roundtrip.py`
 
@@ -51,10 +51,9 @@ Single parametrized test, table-driven over the four fields.
 def test_create_then_detail_roundtrips_value(client, field, value): ...
 ```
 
-- Uses `starlette.testclient.TestClient` against the in-process app from `tests/e2e/app.py`.
+- Uses `starlette.testclient.TestClient` against an app built by `make_app()` from `tests/e2e/app.py` (fresh in-memory SQLite per test — full isolation).
 - POSTs create form with the parametrized field's value plus minimal valid values for the other three required fields.
 - Asserts on the persisted row via the test-owned SQLAlchemy engine — robust across detail-view rendering quirks (e.g. password masking, HTML escaping in rich-text fields).
-- Per-test in-memory SQLite engine — full isolation.
 
 A second assertion verifies the detail-view GET returns 200, to catch detail-template rendering regressions without coupling to exact HTML.
 
@@ -90,22 +89,18 @@ Single test against `SimpleMDEField` (chosen because asserting plain-markdown pe
 @pytest.fixture(scope="session")
 def free_port() -> int: ...
 @pytest.fixture(scope="session")
-def db_path(tmp_path_factory) -> Path: ...
-@pytest.fixture(scope="session")
-def uvicorn_server(free_port, db_path) -> str:
+def uvicorn_server(free_port) -> str:
     # subprocess.Popen(["uvicorn", "tests.e2e.app:app", "--port", str(free_port)])
-    # env={"DB_PATH": str(db_path)}
     # poll http://127.0.0.1:{port}/admin/ until 200, timeout 10s
     yield f"http://127.0.0.1:{free_port}"
     # terminate; kill on timeout
 @pytest.fixture
 def base_url(uvicorn_server) -> str: return uvicorn_server
 @pytest.fixture
-def client() -> TestClient: ...   # in-process TestClient over fresh in-memory engine
-@pytest.fixture(autouse=True)
-def reset_db(db_path, request) -> None:
-    # if 'browser' in request.node.nodeid: truncate kitchen_sink before test
+def client() -> TestClient: ...   # in-process TestClient over fresh make_app()
 ```
+
+Browser tests don't need DB inspection — render-smoke checks selectors only, full-flow asserts via the rendered detail view. Subprocess state leaks across browser tests are avoided by using unique field values per test (UUID-suffixed strings) so assertions can't collide with prior rows.
 
 `pytest_collection_modifyitems` adds `@pytest.mark.e2e` to every test under `tests/e2e/`.
 
@@ -171,7 +166,7 @@ e2e:
 - **Browser flake** — limit browser tests to four render-smoke cases plus one submit. Use Playwright auto-wait locators only; no fixed sleeps.
 - **CDN-loaded JS** (CKEditor4 loads from CDN) — render-smoke selectors must wait for editor mount; if the CDN is unreachable in CI, the test will time out clearly. Document that CI runners need outbound HTTPS.
 - **Subprocess teardown** — `terminate()` first, `kill()` after a short timeout, asserted by polling the port.
-- **DB races** — `reset_db` autouse runs before each browser test; uvicorn is single-process, single-worker, so writes serialise.
+- **Cross-test state in subprocess DB** — uvicorn boots once per session over in-memory SQLite, so rows accumulate. Mitigated by uniquely-keyed payloads (UUID-suffixed values) in browser tests; no truncate fixture needed.
 
 ## Out of scope (future)
 
