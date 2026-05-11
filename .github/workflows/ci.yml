@@ -60,12 +60,10 @@ jobs:
       - name: Install Chromium
         run: uv run --python 3.13 playwright install --with-deps chromium
       - name: Run e2e tests
-        run: uv run --python 3.13 pytest tests/e2e -m e2e -v
-      - name: Upload Playwright trace on failure
+        run: uv run --python 3.13 pytest tests/e2e -m e2e -v --tracing retain-on-failure --screenshot only-on-failure --video retain-on-failure --output test-results
+      - name: Upload Playwright artifacts on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-output
-          path: |
-            test-results/
-            playwright-report/
+          path: test-results/
