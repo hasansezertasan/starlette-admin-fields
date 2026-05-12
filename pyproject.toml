@@ -86,12 +86,18 @@ doc = [
   "mkdocstrings[python]>=1.0.4",
   "mkdocs-static-i18n>=1.3.1",
 ]
+e2e = [
+  "pytest-playwright>=0.5.0",
+  "sqlalchemy>=2.0",
+  "uvicorn>=0.46",
+]
 dev = [
   "pre-commit>=4.6.0",
   "uvicorn>=0.46.0",
   {include-group = "test"},
   {include-group = "cov"},
   {include-group = "doc"},
+  {include-group = "e2e"},
 ]
 
 [tool.coverage.report]
@@ -109,6 +115,7 @@ exclude_lines = [
 branch = true
 parallel = true
 source = ["starlette_admin_fields", "tests"]
+omit = ["tests/e2e/*"]
 
 [tool.ruff]
 target-version = "py310"
@@ -132,10 +139,12 @@ known-third-party = ["starlette_admin_fields"]
 "examples/**" = ["N805", "N999", "RUF012"]
 "tests/**" = [
   "ARG",    # unused fixture / parameter args common in pytest
+  "EM102",  # f-string literals in exceptions are fine in test assertions
   "PLR2004", # magic values in assertions
   "PT001",  # @pytest.fixture parens style
   "RUF012",
   "S101",   # assert is the whole point of tests
+  "TRY003", # long exception messages are appropriate in test assertions
 ]
 
 [tool.mypy]
@@ -149,3 +158,11 @@ warn_unused_ignores = true
 implicit_reexport = false
 strict_equality = true
 ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+markers = [
+  "e2e: end-to-end tests (browser + subprocess uvicorn)",
+]
+# --strict-markers turns undeclared @pytest.mark.<x> into an error globally.
+# Any new marker must be declared in the list above before use.
+addopts = "--strict-markers"
