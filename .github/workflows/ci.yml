@@ -51,7 +51,7 @@ jobs:
       - name: Set up Python
         run: uv python install 3.13
       - name: Sync dependencies
-        run: uv sync --python 3.13 --group e2e
+        run: uv sync --python 3.13 --group test --group e2e
       - name: Cache Playwright browsers
         uses: actions/cache@v4
         with:

@@ -115,7 +115,7 @@ exclude_lines = [
 branch = true
 parallel = true
 source = ["starlette_admin_fields", "tests"]
-omit = ["tests/e2e/app.py"]
+omit = ["tests/e2e/*"]
 
 [tool.ruff]
 target-version = "py310"
