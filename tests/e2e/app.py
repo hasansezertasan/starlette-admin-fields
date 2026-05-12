@@ -12,9 +12,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from sqlalchemy import Column, Integer, String, Text, create_engine
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.pool import StaticPool
 from starlette.applications import Starlette
+from starlette.responses import PlainTextResponse
+from starlette.routing import Route
 from starlette_admin.contrib.sqla import Admin, ModelView
 from starlette_admin.fields import IntegerField
 from starlette_admin_fields import (
@@ -27,11 +29,21 @@ from starlette_admin_fields import (
 
 if TYPE_CHECKING:
     from sqlalchemy.engine import Engine
+    from starlette.requests import Request
 
 KITCHEN_SINK_BASE = "/admin/kitchen-sink"
 """Admin URL prefix for KitchenSinkView routes."""
 
-Base = declarative_base()
+E2E_SENTINEL = "starlette-admin-fields-e2e-ok"
+"""Sentinel string returned by /healthz — used to verify the correct server is running."""
+
+
+async def _healthz(request: Request) -> PlainTextResponse:
+    return PlainTextResponse(E2E_SENTINEL)
+
+
+class Base(DeclarativeBase):
+    pass
 
 
 class KitchenSink(Base):
@@ -70,13 +82,9 @@ def make_app() -> tuple[Starlette, Engine]:
     )
     Base.metadata.create_all(engine)
 
-    starlette_app = Starlette()
+    starlette_app = Starlette(routes=[Route("/healthz", _healthz)])
     admin = Admin(engine, title="E2E: Fields", base_url="/admin")
     StarletteAdminFields(admin=admin)
     admin.add_view(KitchenSinkView(model=KitchenSink))
     admin.mount_to(starlette_app)
     return starlette_app, engine
-
-
-# Module-level singleton used by the uvicorn subprocess fixture.
-app, engine = make_app()

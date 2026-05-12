@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Install uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
           enable-cache: true
       - name: Set up Python ${{ matrix.python-version }}
@@ -23,17 +23,17 @@ jobs:
       - name: Sync dependencies
         run: uv sync --python ${{ matrix.python-version }} --group test --group cov
       - name: Pre-commit (ruff-check, ruff-format, base hooks)
-        uses: pre-commit/action@v3.0.1
+        uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd # v3.0.1
       - name: Lint
         run: uv run --python ${{ matrix.python-version }} mypy src/starlette_admin_fields
       - name: Test
-        run: uv run --python ${{ matrix.python-version }} coverage run -m pytest tests
+        run: uv run --python ${{ matrix.python-version }} coverage run -m pytest tests --ignore=tests/e2e
       - name: Coverage XML
         run: |
           uv run --python ${{ matrix.python-version }} coverage combine
           uv run --python ${{ matrix.python-version }} coverage xml
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
         with:
           files: ./coverage.xml
           flags: py${{ matrix.python-version }}
@@ -45,7 +45,7 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Install uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
           enable-cache: true
       - name: Set up Python
@@ -53,7 +53,7 @@ jobs:
       - name: Sync dependencies
         run: uv sync --python 3.13 --group test --group e2e
       - name: Cache Playwright browsers
-        uses: actions/cache@v4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ hashFiles('uv.lock') }}
@@ -62,8 +62,8 @@ jobs:
       - name: Run e2e tests
         run: uv run --python 3.13 pytest tests/e2e -m e2e -v --tracing retain-on-failure --screenshot only-on-failure --video retain-on-failure --output test-results
       - name: Upload Playwright artifacts on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
+        if: failure() || cancelled()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: playwright-output
+          name: playwright-output-${{ github.run_id }}-${{ github.run_attempt }}
           path: test-results/

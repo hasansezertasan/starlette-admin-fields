@@ -139,10 +139,12 @@ known-third-party = ["starlette_admin_fields"]
 "examples/**" = ["N805", "N999", "RUF012"]
 "tests/**" = [
   "ARG",    # unused fixture / parameter args common in pytest
+  "EM102",  # f-string literals in exceptions are fine in test assertions
   "PLR2004", # magic values in assertions
   "PT001",  # @pytest.fixture parens style
   "RUF012",
   "S101",   # assert is the whole point of tests
+  "TRY003", # long exception messages are appropriate in test assertions
 ]
 
 [tool.mypy]
@@ -161,4 +163,6 @@ ignore_missing_imports = true
 markers = [
   "e2e: end-to-end tests (browser + subprocess uvicorn)",
 ]
-addopts = "-m 'not e2e'"
+# --strict-markers turns undeclared @pytest.mark.<x> into an error globally.
+# Any new marker must be declared in the list above before use.
+addopts = "--strict-markers"

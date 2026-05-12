@@ -8,13 +8,14 @@ import socket
 import subprocess
 import sys
 import time
+import warnings
 from typing import TYPE_CHECKING
 
 import httpx
 import pytest
 from starlette.testclient import TestClient
 
-from tests.e2e.app import make_app
+from tests.e2e.app import E2E_SENTINEL, make_app
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -29,6 +30,10 @@ SERVER_SHUTDOWN_TIMEOUT_S = 5.0
 
 E2E_DIR = pathlib.Path(__file__).parent.resolve()
 
+# 0 = clean exit; SIGTERM (-15) = normal shutdown; SIGKILL (-9) = forced kill
+# when the graceful shutdown timeout expires in teardown.
+_ACCEPTABLE_RETURNCODES = {0, -15, -9}
+
 
 def pytest_collection_modifyitems(
     config: pytest.Config,
@@ -37,7 +42,7 @@ def pytest_collection_modifyitems(
     """Auto-mark every test under ``tests/e2e/`` with ``@pytest.mark.e2e``."""
     e2e_marker = pytest.mark.e2e
     for item in items:
-        if E2E_DIR in item.path.parents or item.path == E2E_DIR:
+        if item.path.is_relative_to(E2E_DIR):
             item.add_marker(e2e_marker)
 
 
@@ -51,16 +56,18 @@ def free_port() -> int:
 
 @pytest.fixture(scope="session")
 def uvicorn_server(free_port: int) -> Iterator[str]:
-    """Boot ``tests.e2e.app:app`` under uvicorn in a subprocess.
+    """Boot ``tests.e2e.server:app`` under uvicorn in a subprocess.
 
     Yields the base URL. Tears down with terminate → kill.
+    stdout and stderr are merged into a single pipe so any startup errors
+    written to either stream appear in failure messages.
     """
     proc = subprocess.Popen(  # noqa: S603
         [
             sys.executable,
             "-m",
             "uvicorn",
-            "tests.e2e.app:app",
+            "tests.e2e.server:app",
             "--host",
             "127.0.0.1",
             "--port",
@@ -68,23 +75,50 @@ def uvicorn_server(free_port: int) -> Iterator[str]:
             "--log-level",
             "warning",
         ],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
     )
 
     base_url = f"http://127.0.0.1:{free_port}"
     deadline = time.monotonic() + SERVER_READY_TIMEOUT_S
     while time.monotonic() < deadline:
+        if proc.poll() is not None:
+            output = proc.stdout.read().decode(errors="replace")  # type: ignore[union-attr]
+            msg = (
+                f"uvicorn exited prematurely (returncode={proc.returncode}) "
+                f"at {base_url}.\noutput: {output}"
+            )
+            raise RuntimeError(msg)
         try:
-            response = httpx.get(f"{base_url}/admin/", timeout=1.0)
-        except httpx.HTTPError:
+            response = httpx.get(f"{base_url}/healthz", timeout=1.0)
+        except (httpx.ConnectError, httpx.TimeoutException):
+            # Server not accepting connections yet — normal during startup.
             time.sleep(SERVER_POLL_INTERVAL_S)
             continue
-        if response.status_code < 500:
+        except (httpx.ReadError, httpx.WriteError, httpx.RemoteProtocolError):
+            # Connection was accepted but then dropped — check if process died.
+            if proc.poll() is not None:
+                output = proc.stdout.read().decode(errors="replace")  # type: ignore[union-attr]
+                msg = (
+                    f"uvicorn died mid-request (returncode={proc.returncode}) "
+                    f"at {base_url}.\noutput: {output}"
+                )
+                raise RuntimeError(msg) from None
+            time.sleep(SERVER_POLL_INTERVAL_S)
+            continue
+        if response.status_code == 200 and response.text == E2E_SENTINEL:
+            # Sentinel check confirms the responding server is our test app,
+            # not an unrelated process that happened to grab the same port.
             break
         time.sleep(SERVER_POLL_INTERVAL_S)
     else:
         proc.kill()
-        proc.wait()
-        msg = f"uvicorn did not become ready at {base_url} within {SERVER_READY_TIMEOUT_S}s"
+        output_bytes, _ = proc.communicate()
+        output = output_bytes.decode(errors="replace")
+        msg = (
+            f"uvicorn did not become ready at {base_url} "
+            f"within {SERVER_READY_TIMEOUT_S}s.\noutput: {output}"
+        )
         raise RuntimeError(msg)
 
     try:
@@ -92,10 +126,20 @@ def uvicorn_server(free_port: int) -> Iterator[str]:
     finally:
         proc.terminate()
         try:
-            proc.wait(timeout=SERVER_SHUTDOWN_TIMEOUT_S)
+            output_bytes, _ = proc.communicate(timeout=SERVER_SHUTDOWN_TIMEOUT_S)
         except subprocess.TimeoutExpired:
             proc.kill()
-            proc.wait()
+            output_bytes, _ = proc.communicate()
+        if proc.returncode not in _ACCEPTABLE_RETURNCODES:
+            output_tail = output_bytes.decode(errors="replace")[-2000:]
+            msg = (
+                f"uvicorn exited with unexpected code {proc.returncode}:\n{output_tail}"
+            )
+            # If a test already failed, warn instead of replacing that exception.
+            if sys.exc_info()[1] is None:
+                pytest.fail(msg)
+            else:
+                warnings.warn(msg, stacklevel=1)
 
 
 @pytest.fixture(scope="session")
@@ -105,9 +149,13 @@ def base_url(uvicorn_server: str) -> str:
 
 
 @pytest.fixture
-def app_and_engine() -> tuple[Starlette, Engine]:
+def app_and_engine() -> Iterator[tuple[Starlette, Engine]]:
     """Fresh in-process app + engine pair for HTTP round-trip tests."""
-    return make_app()
+    app, engine = make_app()
+    try:
+        yield app, engine
+    finally:
+        engine.dispose()
 
 
 @pytest.fixture
