@@ -28,6 +28,9 @@ from starlette_admin_fields import (
 if TYPE_CHECKING:
     from sqlalchemy.engine import Engine
 
+KITCHEN_SINK_BASE = "/admin/kitchen-sink"
+"""Admin URL prefix for KitchenSinkView routes."""
+
 Base = declarative_base()
 
 

@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 import pytest
 from sqlalchemy import select
 
-from tests.e2e.app import KitchenSink
+from tests.e2e.app import KITCHEN_SINK_BASE, KitchenSink
 
 if TYPE_CHECKING:
     from sqlalchemy.engine import Engine
@@ -44,7 +44,7 @@ def test_create_then_persists_and_detail_renders(
     payload[field] = value
 
     create_response = client.post(
-        "/admin/kitchen-sink/create",
+        f"{KITCHEN_SINK_BASE}/create",
         data=payload,
         follow_redirects=False,
     )
@@ -62,7 +62,7 @@ def test_create_then_persists_and_detail_renders(
         f"field={field!r} expected={value!r} got={getattr(persisted, field)!r}"
     )
 
-    detail_response = client.get(f"/admin/kitchen-sink/detail/{persisted.id}")
+    detail_response = client.get(f"{KITCHEN_SINK_BASE}/detail/{persisted.id}")
     assert detail_response.status_code == 200, (
         f"detail view failed: status={detail_response.status_code}"
     )

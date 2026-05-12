@@ -6,6 +6,8 @@ from typing import TYPE_CHECKING
 
 import pytest
 
+from tests.e2e.app import KITCHEN_SINK_BASE
+
 if TYPE_CHECKING:
     from playwright.sync_api import Locator, Page
 
@@ -41,7 +43,7 @@ def test_field_widget_mounts_on_create_page(
     base_url: str,
     field: str,
 ) -> None:
-    page.goto(f"{base_url}/admin/kitchen-sink/create", wait_until="networkidle")
+    page.goto(f"{base_url}{KITCHEN_SINK_BASE}/create", wait_until="networkidle")
     locator = FIELD_LOCATORS[field](page)
     locator.first.wait_for(state="visible", timeout=10_000)
     assert locator.count() >= 1, f"widget for field={field!r} did not mount"

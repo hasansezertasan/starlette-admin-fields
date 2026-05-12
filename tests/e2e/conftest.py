@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import contextlib
+import pathlib
 import socket
 import subprocess
 import sys
@@ -26,6 +27,8 @@ SERVER_READY_TIMEOUT_S = 15.0
 SERVER_POLL_INTERVAL_S = 0.2
 SERVER_SHUTDOWN_TIMEOUT_S = 5.0
 
+E2E_DIR = pathlib.Path(__file__).parent.resolve()
+
 
 def pytest_collection_modifyitems(
     config: pytest.Config,
@@ -34,7 +37,7 @@ def pytest_collection_modifyitems(
     """Auto-mark every test under ``tests/e2e/`` with ``@pytest.mark.e2e``."""
     e2e_marker = pytest.mark.e2e
     for item in items:
-        if "tests/e2e/" in str(item.fspath).replace("\\", "/"):
+        if E2E_DIR in item.path.parents or item.path == E2E_DIR:
             item.add_marker(e2e_marker)
 
 
