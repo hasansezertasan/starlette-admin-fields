@@ -19,6 +19,26 @@ def test_simplemde_round_trips_through_browser(page: Page, base_url: str) -> Non
 
     page.locator('input[name="bootstrap_show_password"]').fill("p4ssword!")
 
+    # Wait for CKEditor5 instance to be attached before driving it.
+    page.wait_for_function(
+        "document.querySelector('.ck-editor__editable')"
+        " && document.querySelector('.ck-editor__editable').ckeditorInstance"
+        " !== undefined",
+        timeout=10_000,
+    )
+    # Wait for CKEditor4 instance to be registered.
+    page.wait_for_function(
+        "window.CKEDITOR && window.CKEDITOR.instances"
+        " && window.CKEDITOR.instances['ckeditor4']",
+        timeout=10_000,
+    )
+    # Wait for SimpleMDE CodeMirror handle.
+    page.wait_for_function(
+        "document.querySelector('.CodeMirror')"
+        " && document.querySelector('.CodeMirror').CodeMirror !== undefined",
+        timeout=10_000,
+    )
+
     # The three rich editors sync to their hidden <textarea name="..."> only on
     # form submit, and they overwrite any value we set directly on the textarea.
     # So drive each one through its own JS API:
@@ -50,6 +70,11 @@ def test_simplemde_round_trips_through_browser(page: Page, base_url: str) -> Non
     # sufficient because the uvicorn subprocess starts with a clean DB.
     page.locator(f'a[href*="{KITCHEN_SINK_BASE}/detail/"]').first.click()
     page.wait_for_load_state("networkidle")
-    assert unique_marker in page.content(), (
+    content = page.content()
+    assert unique_marker in content, (
         "submitted markdown body did not appear in detail view"
     )
+    # starlette-admin renders Text columns by escaping HTML; check for the
+    # inner body text, which appears unescaped regardless of column rendering.
+    assert "ck4 body" in content, "CKEditor4 body did not appear in detail view"
+    assert "ck5 body" in content, "CKEditor5 body did not appear in detail view"
