@@ -76,7 +76,7 @@ Issues = "https://github.com/hasansezertasan/starlette-admin-fields/issues"
 [dependency-groups]
 test = [
   "pytest>=9.0.0",
-  "mypy==1.20.0",
+  "mypy==2.1.0",
   "httpx>=0.28.1",
 ]
 cov = ["coverage[toml]>=7.0.0"]
